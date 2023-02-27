@@ -12,7 +12,7 @@ let output_prediction;
 function getTraits() {
   const traits = {
     agingSpeed: 'Year',
-    birthDate: new Date('2020/01/01'),
+    birthDate: new Date('1970/01/01'),
   };
   console.log(traits);
   return traits;  
@@ -90,4 +90,3 @@ function getImage(brain) {
   // Get data url
   reader.readAsDataURL(file);
 }
-

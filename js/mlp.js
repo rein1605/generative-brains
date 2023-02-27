@@ -97,11 +97,20 @@ class tfake {
     return res;
   }
 
-  static turnoff_neuron(a, m_on) {
+  static turnoff_neuron(a, m_on, seed) {
+    randomSeed(seed);
+    const order = [];
+    for(let i = 0; i < a.m; ++i) {
+      order.push(i);
+    }
+    shuffle(order);
+
+    console.log(order);
+
     const res = a.copy();
     for(let i = 0; i < res.n; ++i) {
       for(let j = m_on; j < res.m; ++j) {
-        res.mat[i][j] = 0.0;
+        res.mat[i][order[j]] = 0.0;
       }
     }
     return res;
@@ -159,7 +168,6 @@ class MultilayerPerceptron {
     const sumActiveNeurons = Math.floor(t * sumNeurons);
     const oldActiveNeurons = this.activeNeurons.reduce((a, b) => a + b);
     if (sumActiveNeurons == oldActiveNeurons) return;
-
         
     const sumInactiveNeurons = sumNeurons - sumActiveNeurons;
     for(let iter = 0; iter < sumInactiveNeurons; ++iter) {
@@ -183,18 +191,18 @@ class MultilayerPerceptron {
     return this.activeNeurons;
   }
 
-  forward(x) {
+  forward(x, iteration) {
     for (const layer of this.preprocessLayers) {
       x = layer.forward(x);
       // console.log(x);
     }
     for (const [i, layer] of this.hiddenLayers.entries()) {
       x = layer.forward(x);
-      x = tfake.turnoff_neuron(x, this.activeNeurons[i]);
-      // console.log(x);
+      x = tfake.turnoff_neuron(x, this.activeNeurons[i], (iteration + 1) * 100 + i);
+      console.log(x);
     }
     x = this.outputLayer.forward(x);
-    // console.log(x);
+    console.log(x);
     return tfake.softmax(x);
   }
 }
